@@ -1,7 +1,9 @@
 import discord
 from discord.ext import commands
 import random
+import youtube_dl
 
+client = discord.Client()
 bot = commands.Bot(command_prefix='&')
 
 @bot.event
@@ -10,6 +12,7 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+    await bot.change_presence(game=discord.Game(name="Czemu kłamiesz?", type=0))
 
 bot.remove_command('help')
 
@@ -34,6 +37,13 @@ async def clear(ctx, num):
 	msg='Usunięto ostatnie ' + str(num) + ' wiadomości'
 	await bot.say(msg)
 
+@bot.command(pass_context=True)
+async def join(ctx):
+	author = ctx.message.author
+	voiceChannel = author.voice_channel
+	voice = await bot.join_voice_channel(voiceChannel)
+	player = await voice.create_ytdl_player('https://www.youtube.com/watch?v=d62TYemN6MQ')
+	player.start()
 
 @bot.event
 async def on_message(message):
